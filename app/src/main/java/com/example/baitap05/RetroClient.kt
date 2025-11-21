@@ -9,7 +9,7 @@ object RetroClient {
     fun getRetrofit(): Retrofit {
         if (retrofit == null) {
             retrofit = Retrofit.Builder()
-                .baseUrl("http://app.iotstar.vn:8081/appfoods/categories.php/")
+                .baseUrl("http://app.iotstar.vn:8081/appfoods/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
         }

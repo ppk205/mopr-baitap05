@@ -1,6 +1,7 @@
 package com.example.baitap05
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,8 +25,13 @@ class CategoryAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item = array[position]
 
+        val imageUrl = item.images
+        Log.d("logg", "Glide loading url = $imageUrl")
+
         Glide.with(context)
-            .load(item.image)
+            .load(imageUrl)
+            .placeholder(R.drawable.ic_launcher_background)
+            .error(R.drawable.ic_launcher_foreground)
             .into(holder.images)
 
         holder.tenSp.text = item.name

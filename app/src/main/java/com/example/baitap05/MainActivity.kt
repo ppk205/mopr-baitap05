@@ -22,7 +22,6 @@ class MainActivity : AppCompatActivity() {
 
         anhXa()
 
-        // Khởi tạo RecyclerView với adapter rỗng để tránh warning
         categoryAdapter = CategoryAdapter(this, categoryList)
         rcCate.setHasFixedSize(true)
         rcCate.layoutManager = LinearLayoutManager(
@@ -46,15 +45,21 @@ class MainActivity : AppCompatActivity() {
                 call: Call<List<Category>>,
                 response: Response<List<Category>>
             ) {
+                Log.d("logg", "onResponse - code: ${response.code()}")
                 if (response.isSuccessful) {
-                    response.body()?.let { list ->
-                        // Cập nhật data cho adapter khi API trả về
-                        categoryList = list
-                        categoryAdapter = CategoryAdapter(this@MainActivity, list)
-                        rcCate.adapter = categoryAdapter
-                        // notifyDataSetChanged không bắt buộc khi set adapter mới, nhưng có cũng không sao
-                        categoryAdapter.notifyDataSetChanged()
+                    val list = response.body()
+                    Log.d("logg", "body: $list")
+
+                    if (list.isNullOrEmpty()) {
+                        Log.d("logg", "Danh sách category rỗng")
+                        return
                     }
+
+                    categoryList = list
+                    categoryAdapter = CategoryAdapter(this@MainActivity, categoryList)
+                    rcCate.adapter = categoryAdapter
+                    categoryAdapter.notifyDataSetChanged()
+                    Log.d("logg", "Gán adapter với size = ${categoryList.size}")
                 } else {
                     val statusCode = response.code()
                     Log.d("logg", "Response error code: $statusCode")
@@ -62,7 +67,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<List<Category>>, t: Throwable) {
-                Log.d("logg", t.message ?: "Unknown Error")
+                Log.d("logg", "onFailure: ${t.message}")
             }
         })
     }
